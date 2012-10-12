@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = Winrm::Cli::VERSION
   gem.authors       = ["Paul Morton"]
   gem.email         = ["pmorton@biaprotect.com"]
-  gem.description   = %q{: Write a gem description}
-  gem.summary       = %q{: Write a gem summary}
+  gem.description   = %q{A WinRM Command Line Application}
+  gem.summary       = %q{A WinRM Command Line Application}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
