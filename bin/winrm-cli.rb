@@ -1,0 +1,87 @@
+require 'rubygems'
+require 'commander/import'
+require 'em-winrm'
+
+$stdout.sync = true
+$stderr.sync = true
+
+# :name is optional, otherwise uses the basename of this executable
+program :name, 'WinRM Commandline'
+program :version, '1.0.0'
+program :description, 'Executes commands against a remote WinRM Instance'
+
+def basic_auth?(username)
+  if username.split("\\").length.eql?(2)
+    false
+  else
+    true
+  end
+end
+
+def output_callbacks(session)
+  # create some callbacks
+  session.on_output do |host, data|
+    $stdout.puts data
+  end
+
+  session.on_error do |host, err|
+    $stderr.puts err
+  end
+
+  session.on_finish do |host|
+    $stdout.puts "#{host} - Done!"
+  end
+end
+
+def encode_script(script)
+      script = script.chars.to_a.join("\x00").chomp
+      script << "\x00" unless script[-1].eql? "\x00"
+      if(defined?(script.encode))
+        script = script.encode('ASCII-8BIT')
+        script = Base64.strict_encode64(script)
+      else
+        script = Base64.encode64(script).chomp
+      end
+      script
+end
+command :exec do |c|
+  c.syntax = 'execute <command>'
+  c.description = 'Executes a remote command'
+
+  c.option '--computer STRING', String, 'Computer to execute against'
+  c.option '--username STRING', String, 'Username to login with'
+  c.option '--password STRING', String, 'The user\'s password'
+
+  c.action do |args, options|
+
+    # create a session
+    session = EventMachine::WinRM::Session.new(:log_level => :info)
+    opts = {:user => options.username, :password => options.password, :basic_auth_only => basic_auth?(options.username)}
+    session.use(options.computer,opts)
+    output_callbacks(session)
+    # run a command
+    session.relay_command('dir')
+        
+    end
+end
+
+command :script do |c|
+  c.syntax = 'execute <command>'
+  c.description = 'Executes a remote command'
+
+  c.option '--computer STRING', String, 'Computer to execute against'
+  c.option '--username STRING', String, 'Username to login with'
+  c.option '--password STRING', String, 'The user\'s password'
+
+  c.action do |args, options|
+    script = ARGV.join(" ").split(' -- ',2)[1]
+    # create a session
+    session = EventMachine::WinRM::Session.new(:log_level => :info)
+    opts = {:user => options.username, :password => options.password, :basic_auth_only => basic_auth?(options.username)}
+    session.use(options.computer,opts)
+    output_callbacks(session)
+    # run a command
+    session.relay_command("powershell -encodedCommand #{encode_script(script)}")
+        
+    end
+end
