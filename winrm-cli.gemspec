@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
-  gem.executables = ['winrm-cli.rb']
+  gem.executables = ['winrm-cli']
 
   gem.add_runtime_dependency  'em-winrm', "~> 0.5.4"
   gem.add_runtime_dependency  'commander'
