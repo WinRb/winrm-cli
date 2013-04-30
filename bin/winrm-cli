@@ -45,30 +45,31 @@ def encode_script(script)
       end
       script
 end
-command :exec do |c|
+
+command :cmd do |c|
   c.syntax = 'execute <command>'
-  c.description = 'Executes a remote command'
+  c.description = 'Executes a remote command via CMD'
 
   c.option '--computer STRING', String, 'Computer to execute against'
   c.option '--username STRING', String, 'Username to login with'
   c.option '--password STRING', String, 'The user\'s password'
 
   c.action do |args, options|
-
+    script = ARGV.join(" ").split(' -- ',2)[1]
     # create a session
     session = EventMachine::WinRM::Session.new(:log_level => :info)
     opts = {:user => options.username, :password => options.password, :basic_auth_only => basic_auth?(options.username), :operation_timeout => 1800, :disable_sspi => true }
     session.use(options.computer,opts)
     output_callbacks(session)
     # run a command
-    session.relay_command('dir')
+    session.relay_command("#{script}")
         
     end
 end
 
 command :script do |c|
   c.syntax = 'execute <command>'
-  c.description = 'Executes a remote command'
+  c.description = 'Executes a remote command via powershell'
 
   c.option '--computer STRING', String, 'Computer to execute against'
   c.option '--username STRING', String, 'Username to login with'
