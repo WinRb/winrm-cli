@@ -18,7 +18,15 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Command Line Execution
+```
+winrm-cli cmd your_command --computer your_computername --username your_username --password your_password
+```
+
+### Powershell Script Execution
+```
+winrm-cli script your_script --computer your_computername --username your_username --password your_password
+```
 
 ## Contributing
 
