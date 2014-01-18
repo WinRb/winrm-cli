@@ -77,6 +77,10 @@ command :script do |c|
 
   c.action do |args, options|
     script = ARGV.join(" ").split(' -- ',2)[1]
+    if !script
+      $stderr.puts "no script supplied"
+      exit 1
+    end
     # create a session
     session = EventMachine::WinRM::Session.new(:log_level => :info)
     opts = {:user => options.username, :password => options.password, :basic_auth_only => basic_auth?(options.username),  :operation_timeout => 1800, :disable_sspi => true}
