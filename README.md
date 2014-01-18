@@ -18,7 +18,17 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### PowerShell Script
+
+    $ winrm-cli script --username joeuser --computer win-01 --password "mypassword" -- "Get-WMIObject Win32_Volume | ft Caption, DirtyBitSet -autosize" 
+
+### CMD
+
+    $ winrm-cli script --username joeuser --computer win-01 --password "mypassword" -- ipconfig
+
+### Getting a back trace
+
+    $ winrm-cli --trace
 
 ## Contributing
 
